@@ -2,9 +2,9 @@
 
 Utilisation des outils suivants :
 
-VirtualBox => Déploiement des VMs
-Vagrant => Création d'un Environnement virtuel
-Ansible => Provisionnement des ressources du Cluster
+VirtualBox => Déploiement des VMs<br/>
+Vagrant => Création d'un Environnement virtuel<br/>
+Ansible => Provisionnement des ressources du Cluster<br/>
 
 
 Prérequis (sous Debian 12 bookworm):
