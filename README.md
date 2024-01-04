@@ -1,8 +1,15 @@
-# kubernetes-cluster-multinode-vagrant-and-ansible
+# Déploiement d'un cluster kubernetes multi-noeuds
 
-Prérequis :
+Utilisation des outils suivants :
 
-1 Install VirtualBox
+VirtualBox => Déploiement des VMs
+Vagrant => Création d'un Environnement virtuel
+Ansible => Provisionnement des ressources du Cluster
+
+
+Prérequis (sous Debian 12 bookworm):
+
+1 Installation de VirtualBox 
 
 - import gpg key of Virtualbox repository
 
