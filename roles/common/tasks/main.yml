@@ -5,20 +5,17 @@
     update_cache=yes
   with_items: "{{ https_packages | default([]) }}"
 
-
 - name: Add new repositories keys
   apt_key:
     url='{{item.key}}'
     state=present
   with_items: "{{ gpg_keys | default([]) }}"
 
-
 - name: Add new apt repositories
   apt_repository:
     repo='{{item.repo}}'
     state=present
   with_items: "{{ repositories | default([]) }}"
-
 
 - name: Install docker
   apt: 
@@ -49,12 +46,10 @@
     daemon_reload: yes
     name: docker
 
-
 - name: Add vagrant user to docker group
   user:
     name: vagrant
     group: docker
-
 
 - name: Remove swapfile from /etc/fstab
   mount:
@@ -65,11 +60,9 @@
     - swap
     - none
 
-
 - name: Disable swap
   command: swapoff -a
   when: ansible_swaptotal_mb > 0
-
 
 - name: Install Kubernetes binaries
   apt: 
@@ -87,3 +80,24 @@
     state: present
   notify:
     - restart kubelet
+
+- name: Remove containerd config file config.toml # issues ubuntu containerd
+  ansible.builtin.file:
+    path: /etc/containerd/config.toml
+    state: absent
+  notify:
+    - restart containerd
+
+- name: Create empty file config.toml
+  file:
+    path: "/etc/containerd/config.toml"
+    state: touch
+
+- name: Insert default config file for containerd
+  ansible.builtin.shell: "containerd config default | sudo tee /etc/containerd/config.toml"
+
+- name: restart containerd
+  systemd:
+    name: containerd
+    state: restarted
+    daemon_reload: yes
