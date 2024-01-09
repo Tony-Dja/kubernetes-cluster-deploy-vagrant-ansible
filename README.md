@@ -1,6 +1,12 @@
+<div align="center">
+
+<img src="https://github.com/Tony-Dja/kubernetes-cluster-deploy-vagrant-ansible/blob/35e60ca64e9bc44f5352709d64ff3f654cdc9ae1/screenshots/kubernetes-cluster.gif">
+
 # Cluster Kubernetes
 
 Déploiement automatisé d'un `cluster Kubernetes multi-noeuds` au sein d'un environnement virtuel `Vagrant`.
+
+</div>
 
 ## Environnement local
 
