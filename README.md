@@ -47,14 +47,62 @@ sudo apt update $ sudo apt install linux-headers-$(uname -r) dkms -y $ sudo apt 
 
 #### Installation de Vagrant
 
+- [ ] Installer les dépendances
 
-### Deployer le cluster et lancer les noeuds
+```sh
+sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
+```
+
+- [ ] Récupérer la clé GPG du dépôt
+
+```sh
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+```
+
+- [ ] Ajouter le dépôt Vagrant
+
+```sh
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+```
+
+- [ ] Installer Vagrant
+
+```sh
+sudo apt update
+sudo apt install vagrant
+vagrant --version
+```
+
+
+#### Installation de Ansible
+
+- [ ] Récupérer la clé GPG du dépôt
+
+```sh
+$ wget -O- "https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0x6125E2A8C77F2818FB7BD15B93C4A3FD7BB9C367" | sudo gpg --dearmour -o /usr/share/keyrings/ansible-archive-keyring.gpg
+```
+
+- [ ] Ajouter le dépôt Ansible
+
+```sh
+$ UBUNTU_CODENAME=jammy
+$ echo "deb [signed-by=/usr/share/keyrings/ansible-archive-keyring.gpg] http://ppa.launchpad.net/ansible/ansible/ubuntu $UBUNTU_CODENAME main" | sudo tee /etc/apt/sources.list.d/ansible.list
+```
+
+- [ ] Installer Ansible
+
+```sh
+$ sudo apt update && sudo apt install ansible
+```
+
+
+## Deployer le cluster et lancer les noeuds
 
 ```sh
 vagrant up
 ```
 
-### Configurer le cluster
+## Configurer le cluster
 
 La configuration du cluster est gérée dans les variables présentes dans le fichier `Vagrantfile`
 
@@ -69,7 +117,7 @@ Il est possible de modifier les paramètres suivants :
 - [ ] Adresses IP du réseaux de Pods
 
 
-### Se connecter au cluster via ssh
+## Se connecter au cluster via ssh
 
 A partir du dossier où se trouve le `Vagrantfile` :
 
@@ -84,9 +132,19 @@ ssh -r vagrant@192.168.56.10
 password = vagrant
 ```
 
-### Configurer kubectl 
+## Configurer kubectl 
 
-Vous pouvez configurer `kubectl` sur votre machine locale afin de communiquer avec l'`API Kubernetes`.
+Vous pouvez configurer la CLI `kubectl` sur votre machine locale afin de communiquer avec l'`API Kubernetes`.
+
+- [ ] Installer kubectl
+
+```sh
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+```
 
 Copier sur votre machine locale le dossier `.kube` contenant le fichier de configuration du cluster :
 
@@ -95,7 +153,7 @@ scp -r vagrant@192.168.56.10:/home/vagrant/.kube $HOME/
 password = vagrant
 ```
 
-### Tester la configuration du cluster
+## Tester la configuration du cluster
 
 Vérifier que les Noeuds sont bien présents avec un status `Ready` :
 
@@ -133,3 +191,4 @@ kube-system    kube-proxy-nlhbd                 1/1     Running   0          98m
 kube-system    kube-proxy-tqzq4                 1/1     Running   0          96m   192.168.56.11   worker-1              
 kube-system    kube-scheduler-master            1/1     Running   0          99m   192.168.56.10   master      
 ```
+
